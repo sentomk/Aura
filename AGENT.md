@@ -1,4 +1,4 @@
-# AGENTS.md — Aura
+# AGENT.md — Aura
 
 AI-powered multi-market stock analysis desktop app. Tauri v2 shell wrapping a Vue 3 frontend and a FastAPI Python backend.
 
