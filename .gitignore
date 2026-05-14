@@ -1,0 +1,194 @@
+# Python virtual environments and bytecode
+env/
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.py[cod]
+*$py.class
+*.pyc.*
+*.pyo.*
+.Python
+*.egg-info/
+tradingagents.egg-info/
+*.so
+
+# Environment variables (contains sensitive API keys)
+.env
+.env.local
+.env.*.local
+.env.db
+.env.mongodb*
+
+# System files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.vscode/settings.json
+
+# AI tool directories
+.trae/
+.augment/
+.claude/
+.codex/
+.hermes/
+
+# Data files
+*.csv
+*.xlsx
+*.xls
+
+# JSON config — ignore runtime data, keep code-required configs
+config/*.json
+!config/*.json.example
+data/**/*.json
+*.cache.json
+*_cache.json
+hk_stock_cache.json
+
+# Project directories (runtime output)
+eval_results/
+eval_data/
+results/
+logs/
+temp/
+/src/
+/cache/
+data/
+runtime/
+vendors/
+
+# Data caches
+dataflows/data_cache/
+tradingagents/dataflows/data_cache/
+tradingagents/dataflows/cache/data_cache/metadata/
+finnhub_data/
+enhanced_analysis_reports/
+china_stocks/
+us_stocks/
+stock_cache/
+
+# Stock data cache patterns
+*_stock_data_*.txt
+*_stock_data_*.json
+*_stock_data_*.csv
+
+# Test and coverage reports
+.coverage
+.pytest_cache/
+htmlcov/
+
+# Documentation builds
+docs/_build/
+docs/contribution/
+docs/v1.0.0-preview/
+site/
+
+# Stale docs
+*_PREVIEW_README.md
+RELEASE_NOTES_PREVIEW.md
+DEEPSEEK_PREVIEW_README.md
+docs/OPTIMIZATION_PLAN.md
+docs/OPTIMIZATION_PLAN_EN.md
+docs/README_OPTIMIZATION.md
+plan/
+
+# Node / TypeScript build artifacts
+node_modules/
+*.tsbuildinfo
+frontend/.vite
+frontend/dist/
+frontend/node_modules
+frontend/src-tauri/target
+frontend/.env*
+frontend/package-lock.json
+frontend/.eslintrc-auto-import.json
+frontend/auto-imports.d.ts
+frontend/tsconfig.tsbuildinfo
+frontend/components.d.ts
+
+# Installers and archives
+*.msi
+*.msix
+*.zip
+*.7z
+*.rar
+*.tar
+*.tar.gz
+*.tgz
+*.xz
+*.archive
+*.bak
+*.old
+
+# Build outputs
+/dist/
+build/
+
+# Logs and runtime artifacts
+*.log
+*.log*
+*.pid
+*.pid.lock
+
+# Python cache files
+*.cache
+.streamlit/cache/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Upstream source snapshots (do not track)
+back/
+
+# Historical backup snapshots
+data_backup_*/
+backups/
+config/backup/
+
+# Portable release build
+release/
+
+# Windows installer build outputs
+scripts/windows-installer/nsis/*.exe
+scripts/windows-installer/nsis/*.zip
+
+# Temporary test / utility scripts
+test_mongodb_connection.py
+test_mongodb_fix.py
+verify_database_fix.py
+setup_mongodb_user.py
+test_*_conversion.py
+test_*_reports.py
+test_*_function.py
+test_export_simple.py
+test_wkhtmltopdf.py
+scripts/test_time_serialization.py
+scripts/create_mongodb_admin.py
+COMMIT_SUMMARY.md
+
+# Local service / deployment scripts
+start_local_services.bat
+stop_local_services.bat
+nginx/local.nginx.conf
+
+# Deprecated deployment scripts
+scripts/deployment/assemble_portable_release.ps1
+scripts/deployment/assemble_portable_release_fixed.ps1
+scripts/deployment/build_portable_release.ps1
+scripts/deployment/package_with_7zip.ps1
+scripts/deployment/quick_sync_and_build.ps1
+scripts/deployment/stage_local_vendors.ps1
+
+# Docker overrides (credentials / local tweaks)
+docker-compose.override.yml

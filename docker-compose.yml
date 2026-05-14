@@ -1,0 +1,119 @@
+version: '3.8'
+
+services:
+  # FastAPI 后端服务
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    image: aura-backend:latest
+    container_name: aura-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./logs:/app/logs
+      - ./config:/app/config
+      - ./data:/app/data
+    environment:
+      PYTHONUNBUFFERED: 1
+      PYTHONDONTWRITEBYTECODE: 1
+      TZ: "Asia/Shanghai"
+      TRADINGAGENTS_LOG_LEVEL: "INFO"
+      TRADINGAGENTS_LOG_DIR: "/app/logs"
+      TRADINGAGENTS_LOG_FILE: "/app/logs/tradingagents.log"
+      TRADINGAGENTS_MONGODB_URL: mongodb://admin:tradingagents123@mongodb:27017/tradingagents?authSource=admin
+      # Docker备用配置
+      TUSHARE_TOKEN: "your_tushare_token"
+      TRADINGAGENTS_REDIS_URL: redis://:tradingagents123@redis:6379
+      TRADINGAGENTS_CACHE_TYPE: redis
+      DOCKER_CONTAINER: "true"
+      MONGODB_HOST: mongodb
+      REDIS_HOST: redis
+      API_HOST: "0.0.0.0"
+      API_PORT: "8000"
+      # CORS配置
+      ALLOWED_ORIGINS: '["http://localhost:1420","http://127.0.0.1:1420","http://localhost:3000","http://localhost:8080","http://localhost:5173","tauri://localhost","http://tauri.localhost","https://tauri.localhost"]'
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - aura-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "3"
+
+  # MongoDB 数据库
+  mongodb:
+    image: mongo:4.4
+    container_name: aura-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: tradingagents123
+      MONGO_INITDB_DATABASE: tradingagents
+      TZ: "Asia/Shanghai"
+    volumes:
+      - mongodb_data:/data/db
+      - ./scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - aura-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo localhost:27017/test --quiet
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "2"
+
+  # Redis 缓存
+  redis:
+    image: redis:7-alpine
+    container_name: aura-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    environment:
+      TZ: "Asia/Shanghai"
+    command: redis-server --appendonly yes --requirepass tradingagents123
+    volumes:
+      - redis_data:/data
+    networks:
+      - aura-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "2"
+
+volumes:
+  mongodb_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  aura-network:
+    driver: bridge
