@@ -1,6 +1,6 @@
 # AGENTS.md — Aura
 
-AI-powered A-share stock analysis desktop app. Tauri v2 shell wrapping a Vue 3 frontend and a FastAPI Python backend.
+AI-powered multi-market stock analysis desktop app. Tauri v2 shell wrapping a Vue 3 frontend and a FastAPI Python backend.
 
 ## Tech Stack
 
@@ -13,7 +13,7 @@ AI-powered A-share stock analysis desktop app. Tauri v2 shell wrapping a Vue 3 f
 | Database | MongoDB (motor async driver) |
 | Cache | Redis |
 | Auth | JWT (PyJWT) + bcrypt |
-| LLM | langchain, openai, multiple provider SDKs |
+| LLM | langchain + multi-provider adapter layer (DeepSeek primary) |
 | Data | akshare, baostock, tushare, yfinance |
 
 ## Project Layout
@@ -43,9 +43,11 @@ Aura/
 │   │       ├── Login.vue
 │   │       └── pages/          # Feature pages
 │   │           ├── Overview.vue
-│   │           ├── Analysis.vue    # Form + task tabs (submit, poll, track progress)
-│   │           ├── Reports.vue     # Completed reports list + full detail view
-│   │           └── Settings.vue    # Backend URL, LLM API keys, about
+│   │           ├── Analysis.vue         # Form + task tabs (submit, poll, track progress)
+│   │           ├── Reports.vue          # Completed reports list + full detail view
+│   │           ├── Stocks.vue           # Stock screening strategies
+│   │           ├── DataManagement.vue   # Data source sync & history
+│   │           └── Settings.vue         # Backend URL, LLM API keys, about
 │   ├── components/
 │   │   └── MarkdownRenderer.vue    # marked-based markdown → HTML rendering
 │   └── src-tauri/
@@ -130,7 +132,7 @@ The Rust sidecar (`lib.rs`) auto-spawns the backend when the Tauri app starts. I
 
 ### Git
 
-- Branch `refactor/tauri` is the active development branch (based on `main`).
+- Branch `main` is the active development branch.
 - Remote: `git@github.com:sentomk/Aura.git`.
 - Commit style: conventional commits in English.
 

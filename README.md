@@ -1,6 +1,6 @@
-# Aura — AI-Powered Stock Analysis
+# Aura — AI-Powered Financial Analysis
 
-A-share market analysis desktop app built with Tauri v2 + FastAPI + Vue 3.
+Multi-market stock analysis desktop app built with Tauri v2 + FastAPI + Vue 3.
 
 ## Tech Stack
 
@@ -9,8 +9,8 @@ A-share market analysis desktop app built with Tauri v2 + FastAPI + Vue 3.
 | Desktop shell | Tauri v2 (Rust) |
 | Frontend | Vue 3 + TypeScript + Vite |
 | Backend | FastAPI (Python) + Uvicorn |
-| Database | MongoDB 4.4 + Redis 7 |
-| AI Models | DeepSeek / Qwen / OpenAI-compatible |
+| Database | MongoDB + Redis |
+| AI Models | DeepSeek (primary) + multi-provider adapter layer |
 | Data Sources | AKShare / Tushare / BaoStock |
 | Package Mgmt | uv (Python) + npm (Frontend) |
 
@@ -91,84 +91,45 @@ Edit `.env` and set at least one LLM API key:
 
 ```bash
 DEEPSEEK_API_KEY=sk-xxxxxxxxxxxxxxxx
-DASHSCOPE_API_KEY=sk-xxxxxxxxxxxxxxxx
 ```
 
 Or configure via the web UI: **Settings → LLM Providers**.
-
-## Docker Deploy (Backend Only)
-
-For VPS deployment use the `deploy/backend` branch:
-
-```bash
-git clone -b deploy/backend https://github.com/<user>/Aura.git
-cd Aura
-docker compose up -d
-```
-
-## Frontend-Only Deploy
-
-Use the `deploy/frontend` branch when the backend is already running on a VPS:
-
-```bash
-git clone -b deploy/frontend https://github.com/<user>/Aura.git
-cd Aura/frontend
-nvm use
-npm install
-npm run build
-```
-
-The built browser assets are in `frontend/dist`. The Tauri shell in this branch does not start a Python backend; it only reads the backend address configured by the user.
-
-Backend URL resolution order:
-
-1. User setting in `localStorage` (`aura_backend_url`)
-2. Build-time default `VITE_AURA_BACKEND_URL`
-3. Tauri runtime env `AURA_BACKEND_URL`
-4. `http://localhost:8000`
-
-To bake in a default remote backend for browser builds:
-
-```bash
-VITE_AURA_BACKEND_URL=https://api.example.com npm run build
-```
-
-Users can still change the backend address on the login page before signing in, or later from **Settings → Backend connection**. Changing the backend address clears the current login token and requires signing in again.
-
-The remote backend must allow the frontend origin in CORS. For local/Tauri development, include:
-
-```text
-http://localhost:1420
-tauri://localhost
-http://tauri.localhost
-https://tauri.localhost
-```
 
 ## Project Structure
 
 ```
 Aura/
 ├── app/                    # FastAPI backend
-│   ├── api/                # API routes
+│   ├── routers/            # API routes (~39 modules)
 │   ├── core/               # Database, config, middleware
 │   ├── models/             # Pydantic models
-│   └── services/           # Business logic
+│   ├── services/           # Business logic (~48 modules)
+│   ├── worker/             # Background sync workers
+│   └── middleware/         # Request/response middleware
 ├── frontend/               # Vue 3 frontend
 │   ├── src/
 │   │   ├── api/            # API client
 │   │   ├── stores/         # Reactive state
-│   │   ├── views/          # Page components
+│   │   ├── views/          # Pages & shell
 │   │   └── components/     # Reusable components
-│   └── src-tauri/          # Tauri config
+│   └── src-tauri/          # Tauri config & Rust sidecar
 ├── tradingagents/          # Analysis engine
 │   ├── agents/             # AI analysts
 │   ├── dataflows/          # Data fetching & caching
-│   └── llm_adapters/       # LLM adapters
+│   └── llm_adapters/       # LLM provider adapters
+├── cli/                    # CLI tools
+├── web/                    # Streamlit web UI (legacy)
 ├── config/                 # Runtime config
 ├── scripts/                # Utility scripts
 ├── setup.sh                # One-command setup
 ├── .env.example            # Environment template
 └── pyproject.toml
+```
+
+## Docker Deploy
+
+```bash
+docker compose up -d
 ```
 
 ## Useful Commands
